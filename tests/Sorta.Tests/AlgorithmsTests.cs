@@ -1,4 +1,5 @@
-﻿using Sorta.Algorithms;
+﻿using Sorta.Abstractions;
+using Sorta.Algorithms;
 using System.Collections.Generic;
 using Xunit;
 
@@ -13,16 +14,19 @@ namespace Sorta.Tests.AlgorithmsTests
             new object[] { new int[] { 0, 6, 4, 3, 8, 9, 1, 2, 3, 5} },
             new object[] { new int[] { 1, 1, 1, 3, 3, 3, 6, 6, 0, 0, 0, 0} },
         };
-        
+
         [Theory]
         [MemberData(nameof(Data))]
-        public void InsertionSortTests(int[] data)
+        public void BubbleSortTests(int[] data) => TestAlgorithm(new BubbleSort(), data);
+
+        [Theory]
+        [MemberData(nameof(Data))]
+        public void InsertionSortTests(int[] data) => TestAlgorithm(new InsertionSort(), data);
+            
+        private void TestAlgorithm(IAlgorithm sort, int[] data)
         {
-            var insertionSort = new InsertionSort();
             var context = new TestSortContext(data);
-
-            insertionSort.Sort(context);
-
+            sort.Sort(context);
             context.AssertSorted();
         }
     }

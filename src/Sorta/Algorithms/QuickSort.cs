@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Sorta.Algorithms
 {
-    public class SelectionSort : IAlgorithm
+    public class QuickSort : IAlgorithm
     {
-        public string Algorithm => "Selection Sort";
+        public string Algorithm => throw new NotImplementedException();
 
         public void Sort(ISortContext context)
         {

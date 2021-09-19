@@ -8,10 +8,10 @@ namespace Sorta
     {
         public static IServiceCollection AddSortingAlgorithms(this IServiceCollection services)
         {
-            var type = typeof(ISort);
+            var type = typeof(IAlgorithm);
 
             var sorts = type.Assembly.GetTypes()
-                .Where(t => t.IsClass && !t.IsAbstract && t.GetInterface(nameof(ISort)) == type);
+                .Where(t => t.IsClass && !t.IsAbstract && t.GetInterface(nameof(IAlgorithm)) == type);
 
             foreach (var sort in sorts)
             {

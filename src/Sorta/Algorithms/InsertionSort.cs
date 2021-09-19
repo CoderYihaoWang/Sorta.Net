@@ -2,7 +2,7 @@
 
 namespace Sorta.Algorithms
 {
-    public class InsertionSort : ISort
+    public class InsertionSort : IAlgorithm
     {
         public string Algorithm => "Insertion Sort";
 

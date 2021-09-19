@@ -11,10 +11,10 @@ namespace Sorta.Api.Controllers
     [Route("/api")]
     public class SortController : ControllerBase
     {
-        private readonly IEnumerable<ISort> _sorts;
+        private readonly IEnumerable<IAlgorithm> _sorts;
         private readonly int _maxSteps;
 
-        public SortController(IEnumerable<ISort> sorts, IConfiguration configuration)
+        public SortController(IEnumerable<IAlgorithm> sorts, IConfiguration configuration)
         {
             _sorts = sorts;
             _maxSteps = configuration.GetValue<int?>("MaxSteps") ?? 10000;

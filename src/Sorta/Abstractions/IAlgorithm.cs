@@ -1,6 +1,6 @@
 ﻿namespace Sorta.Abstractions
 {
-    public interface ISort
+    public interface IAlgorithm
     {
         string Algorithm { get; }
         void Sort(ISortContext context);
