@@ -46,7 +46,11 @@ This project is an API that exposes 2 endpoints:
 
 ## How it works
 
-The project aims to provide an unobstrusive way to generate stats and steps. To achieve this, the sorting algorithms run sortings against an `ISortContext` object. This object provides methods for manipulate the underlying int array (e.g. `.Copy(int from, int to)`, `.Swap(int from, int to)`, etc). It also provides a mechanism to create temporary variable, so that the comparisons and copies against these variable do not escape from our statistics.
+The project aims to provide an unobstrusive way to generate stats and steps. To achieve this, the sorting algorithms run sortings against an `ISortContext` object. This object provides methods for manipulating the underlying int array (e.g. `.Copy(int from, int to)`, `.Swap(int from, int to)`, etc). It also provides a mechanism to create temporary variable, so that the comparisons and copies against these variable do not escape from our statistics.
+
+In the API, an `ISortContext` with recording ability is used, so that when the sorting algorithms are invoked, it intercepts and records the calls to `Copy`, `Compare`, `Swap` and so on. It will generate the stats and steps based on these.
+
+In the unit tests, however, we use a simpler `ISortContext` which is just a wrapper for an int array. This makes sure the sorting algorithms can be tested quickly, and ensures that the algorithms are usable in a general-purpose way.
 
 ## Add your own algorithms
 
