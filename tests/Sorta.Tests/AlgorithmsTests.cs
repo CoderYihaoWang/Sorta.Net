@@ -27,6 +27,14 @@ namespace Sorta.Tests.AlgorithmsTests
         [MemberData(nameof(Data))]
         public void SelectionSortTests(int[] data) => TestAlgorithm(new SelectionSort(), data);
 
+        [Theory]
+        [MemberData(nameof(Data))]
+        public void ShellSortTests(int[] data) => TestAlgorithm(new ShellSort(), data);
+
+        [Theory]
+        [MemberData(nameof(Data))]
+        public void ShellSortCiuraTests(int[] data) => TestAlgorithm(new ShellSortCiura(), data);
+
         private void TestAlgorithm(IAlgorithm sort, int[] data)
         {
             var context = new TestSortContext(data);

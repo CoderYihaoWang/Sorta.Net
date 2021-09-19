@@ -7,30 +7,27 @@ using System.Threading.Tasks;
 
 namespace Sorta.Algorithms
 {
-    public class ShellSort : IAlgorithm
-    {     
-        public string Algorithm => "Shell Sort";
+    public class ShellSortCiura : IAlgorithm
+    {
+        // Ciura gap sequence
+        private readonly int[] _gaps = new int[] { 701, 301, 132, 57, 23, 10, 4, 1 };
+
+        public string Algorithm => "Shell Sort with Ciura Sequence";
 
         public void Sort(ISortContext context)
         {
-            int gap = 1;
-            while (gap < context.Length / 3)
-            {
-                gap = gap * 3 + 1;
-            }
-
-            for (; gap > 0; gap /= 3)
+            foreach (int gap in _gaps)
             {
                 for (int i = gap; i < context.Length; i++)
                 {
                     context.CreateVariable("temp");
                     context.Copy(i, "temp");
-                    var j = i - gap;
-                    for (; j >= 0 && context.Compare(j, "temp") == ComparisonResult.Greater; j -= gap)
+                    int j = i;
+                    for (; j >= gap && context.Compare(j - gap, "temp") == ComparisonResult.Greater; j -= gap)
                     {
-                        context.Swap(j + gap, j);
+                        context.Swap(j, j - gap);
                     }
-                    context.Copy("temp", j + gap);
+                    context.Copy("temp", j);
                 }
             }
         }
