@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Sorta.Abstractions
+﻿namespace Sorta.Abstractions
 {
     public interface ISortContext
     {
