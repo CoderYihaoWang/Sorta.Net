@@ -22,7 +22,11 @@ namespace Sorta.Tests.AlgorithmsTests
         [Theory]
         [MemberData(nameof(Data))]
         public void InsertionSortTests(int[] data) => TestAlgorithm(new InsertionSort(), data);
-            
+
+        [Theory]
+        [MemberData(nameof(Data))]
+        public void SelectionSortTests(int[] data) => TestAlgorithm(new SelectionSort(), data);
+
         private void TestAlgorithm(IAlgorithm sort, int[] data)
         {
             var context = new TestSortContext(data);

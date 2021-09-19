@@ -13,7 +13,18 @@ namespace Sorta.Algorithms
 
         public void Sort(ISortContext context)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < context.Length - 1; i++)
+            {
+                var minIndex = i;
+                for (int j = i + 1; j < context.Length; j++)
+                {
+                    if (context.Compare(j, minIndex) == ComparisonResult.Smaller)
+                    {
+                        minIndex = j;
+                    }
+                }
+                context.Swap(i, minIndex);
+            }
         }
     }
 }
