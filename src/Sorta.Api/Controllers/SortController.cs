@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Sorta.Abstractions;
 
@@ -13,12 +14,12 @@ namespace Sorta.Api.Controllers
     public class SortController : ControllerBase
     {
         private readonly IEnumerable<ISort> _sorts;
-        private readonly ILogger<SortController> _logger;
+        private int _maxSteps;
 
-        public SortController(IEnumerable<ISort> sorts, ILogger<SortController> logger)
+        public SortController(IEnumerable<ISort> sorts, IConfiguration configuration)
         {
             _sorts = sorts;
-            _logger = logger;
+            _maxSteps = configuration.GetValue<int?>("MaxSteps") ?? 10000;
         }
 
         [HttpGet]
@@ -29,7 +30,8 @@ namespace Sorta.Api.Controllers
 
         [HttpGet("{algorithm}")]
         public ActionResult<SortStats> Sort([FromRoute] string algorithm, 
-            [FromQuery] string data)
+            [FromQuery] string data,
+            [FromQuery] int? maxSteps)
         {
             var sort = _sorts.FirstOrDefault(s => s.Algorithm.Equals(algorithm, StringComparison.OrdinalIgnoreCase));
 
@@ -40,7 +42,7 @@ namespace Sorta.Api.Controllers
 
             var input = data.Split(',').Select(d => int.Parse(d));
 
-            var context = new RecordingSortContext(input, 10);
+            var context = new RecordingSortContext(input, maxSteps ?? _maxSteps);
 
             try
             {
