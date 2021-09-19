@@ -35,7 +35,11 @@ namespace Sorta.Tests.AlgorithmsTests
         [MemberData(nameof(Data))]
         public void ShellSortCiuraTests(int[] data) => TestAlgorithm(new ShellSortCiura(), data);
 
-        private void TestAlgorithm(IAlgorithm sort, int[] data)
+        [Theory]
+        [MemberData(nameof(Data))]
+        public void MergeSortTopDownTests(int[] data) => TestAlgorithm(new MergeSortTopDown(), data);
+
+        private static void TestAlgorithm(IAlgorithm sort, int[] data)
         {
             var context = new TestSortContext(data);
             sort.Sort(context);

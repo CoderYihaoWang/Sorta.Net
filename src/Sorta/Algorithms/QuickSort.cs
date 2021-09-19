@@ -9,7 +9,7 @@ namespace Sorta.Algorithms
 {
     public class QuickSort : IAlgorithm
     {
-        public string Algorithm => throw new NotImplementedException();
+        public string Algorithm => "Quick Sort";
 
         public void Sort(ISortContext context)
         {

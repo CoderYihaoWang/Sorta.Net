@@ -36,7 +36,7 @@ namespace Sorta.Api.Controllers
             [FromQuery] string data,
             [FromQuery] int? maxSteps)
         {
-            var sort = _sorts.FirstOrDefault(s => s.Algorithm.Equals(algorithm, StringComparison.OrdinalIgnoreCase));
+            var sort = _sorts.FirstOrDefault(s => s.Algorithm.Equals(algorithm.Replace("-", " "), StringComparison.OrdinalIgnoreCase));
 
             if (sort is null)
             {
