@@ -22,6 +22,8 @@ namespace Sorta
         private int _variables;
         private bool _hasCompleted;
 
+        private bool _hasSwapped;
+
         public int Length => _input.Length;
         public SortStats Results 
         {
@@ -219,7 +221,13 @@ namespace Sorta
             EnsureSteps();
 
             _swaps++;
-            _copies += 2;
+            _copies += 3;
+
+            if (!_hasSwapped)
+            {
+                _variables++;
+            }
+            _hasSwapped = true;
 
             _steps.Add(new Operation
             {
@@ -236,7 +244,13 @@ namespace Sorta
             EnsureSteps();
 
             _swaps++;
-            _copies += 2;
+            _copies += 3;
+
+            if (!_hasSwapped)
+            {
+                _variables++;
+            }
+            _hasSwapped = true;
 
             _steps.Add(new Operation
             {
@@ -253,7 +267,14 @@ namespace Sorta
             EnsureSteps();
 
             _swaps++;
-            _copies += 2;
+            _copies += 3;
+
+            if (!_hasSwapped)
+            {
+                _variables++;
+            }
+            _hasSwapped = true;
+
 
             _steps.Add(new Operation
             {
@@ -270,7 +291,14 @@ namespace Sorta
             EnsureSteps();
 
             _swaps++;
-            _copies += 2;
+            _copies += 3;
+
+            if (!_hasSwapped)
+            {
+                _variables++;
+            }
+            _hasSwapped = true;
+
 
             _steps.Add(new Operation
             {
