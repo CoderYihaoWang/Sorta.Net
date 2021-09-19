@@ -9,7 +9,7 @@ namespace Sorta.Algorithms
 {
     public class SelectionSort : ISort
     {
-        public string Algorithm => "Selection";
+        public string Algorithm => "Selection Sort";
 
         public void Sort(ISortContext context)
         {

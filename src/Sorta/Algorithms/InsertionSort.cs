@@ -4,7 +4,7 @@ namespace Sorta.Algorithms
 {
     public class InsertionSort : ISort
     {
-        public string Algorithm => "Insertion";
+        public string Algorithm => "Insertion Sort";
 
         public void Sort(ISortContext context)
         {

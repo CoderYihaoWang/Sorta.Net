@@ -12,7 +12,7 @@ namespace Sorta.Api.Controllers
     public class SortController : ControllerBase
     {
         private readonly IEnumerable<ISort> _sorts;
-        private int _maxSteps;
+        private readonly int _maxSteps;
 
         public SortController(IEnumerable<ISort> sorts, IConfiguration configuration)
         {
@@ -21,10 +21,15 @@ namespace Sorta.Api.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IDictionary<string, string> Get() 
         {
-            return _sorts.Select(s => s.Algorithm);
-        }
+            var results = new Dictionary<string, string>();
+            foreach (var sort in _sorts)
+            {
+                results[sort.Algorithm] = $"{Request.Scheme}://{Request.Host}{Request.PathBase}/api/{sort.Algorithm.ToLowerInvariant().Replace(" ", "-")}";
+            }
+            return results;
+        } 
 
         [HttpGet("{algorithm}")]
         public ActionResult<SortStats> Sort([FromRoute] string algorithm, 
