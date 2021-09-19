@@ -1,4 +1,5 @@
 ﻿using Sorta.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,20 +12,18 @@ namespace Sorta
 
     public class RecordingSortContext : IRecordingSortContext
     {
+        private readonly int _maxSteps;
         private readonly int[] _input;
         private readonly int[] _data;
         private readonly IList<Operation> _steps;
+        private readonly IDictionary<string, int> _vars;
         private int _swaps;
         private int _comparisons;
         private int _copies;
         private int _variables;
-        private string _errorMessage;
+        private bool _hasCompleted;
 
-        private readonly IDictionary<string, int> _tempVars;
-
-        private bool _hasTerminated;
-        private bool _hasSwapped;
-
+        public int Length => _input.Length;
         public SortStats Results 
         {
             get 
@@ -37,38 +36,48 @@ namespace Sorta
                     Comparisons = _comparisons,
                     Swaps = _swaps,
                     Copies = _copies,
-                    TemporaryVariables = _variables,
-                    ErrorMessage = _errorMessage,
-                    IsSuccessful = string.IsNullOrEmpty(_errorMessage)
+                    Variables = _variables,
+                    HasCompleted = _hasCompleted
                 };
             } 
         }
 
-        public int Length => _input.Length;
-
-        public RecordingSortContext(IEnumerable<int> data)
+        public RecordingSortContext(IEnumerable<int> data, int maxSteps)
         {
+            _maxSteps = maxSteps;
             _input = data.ToArray();
             _data = data.ToArray();
             _steps = new List<Operation>();
-            _tempVars = new Dictionary<string, int>();
+            _vars = new Dictionary<string, int>();
+            _hasCompleted = true;
         }
 
         public void CreateVariable(string name)
         {
-            if (_tempVars.ContainsKey(name))
+            EnsureSteps();
+
+            if (_vars.ContainsKey(name))
             {
-                _tempVars[name] = 0;
+                _vars[name] = 0;
             }
             else
             {
-                _tempVars.Add(name, 0);
+                _vars.Add(name, 0);
                 _variables++;
             }
+            _steps.Add(new Operation
+            {
+                Type = OperationType.Create,
+                Name = name
+            });
         }
+
+        #region Copy
 
         public void Copy(int from, int to)
         {
+            EnsureSteps();
+            
             _copies++;
             _steps.Add(new Operation
             {
@@ -81,6 +90,8 @@ namespace Sorta
 
         public void Copy(string from, int to)
         {
+            EnsureSteps();
+
             _copies++;
             _steps.Add(new Operation
             {
@@ -88,11 +99,13 @@ namespace Sorta
                 FromVar = from,
                 To = to
             });
-            _data[to] = _tempVars[from];
+            _data[to] = _vars[from];
         }
 
         public void Copy(int from, string to)
         {
+            EnsureSteps();
+
             _copies++;
             _steps.Add(new Operation
             {
@@ -100,11 +113,13 @@ namespace Sorta
                 From = from,
                 ToVar = to
             });
-            _tempVars[to] = _data[from];
+            _vars[to] = _data[from];
         }
 
         public void Copy(string from, string to)
         {
+            EnsureSteps();
+
             _copies++;
             _steps.Add(new Operation
             {
@@ -112,11 +127,18 @@ namespace Sorta
                 FromVar = from,
                 ToVar = to
             });
-            _tempVars[to] = _tempVars[from];
+            _vars[to] = _vars[from];
         }
-        
+
+        #endregion Copy
+
+        #region Compare
+
+
         public ComparisonResult Compare(int from, int to)
         {
+            EnsureSteps();
+
             _comparisons++;
             _steps.Add(new Operation
             {
@@ -134,6 +156,8 @@ namespace Sorta
 
         public ComparisonResult Compare(string from, int to)
         {
+            EnsureSteps();
+
             _comparisons++;
             _steps.Add(new Operation
             {
@@ -141,7 +165,7 @@ namespace Sorta
                 FromVar = from,
                 To = to
             });
-            return (_tempVars[from] - _data[to]) switch
+            return (_vars[from] - _data[to]) switch
             {
                 > 0 => ComparisonResult.Greater,
                 < 0 => ComparisonResult.Smaller,
@@ -151,6 +175,8 @@ namespace Sorta
 
         public ComparisonResult Compare(int from, string to)
         {
+            EnsureSteps();
+
             _comparisons++;
             _steps.Add(new Operation
             {
@@ -158,7 +184,7 @@ namespace Sorta
                 From = from,
                 ToVar = to
             });
-            return (_data[from] - _tempVars[to]) switch
+            return (_data[from] - _vars[to]) switch
             {
                 > 0 => ComparisonResult.Greater,
                 < 0 => ComparisonResult.Smaller,
@@ -168,6 +194,8 @@ namespace Sorta
 
         public ComparisonResult Compare(string from, string to)
         {
+            EnsureSteps();
+
             _comparisons++;
             _steps.Add(new Operation
             {
@@ -175,7 +203,7 @@ namespace Sorta
                 FromVar = from,
                 ToVar = to
             });
-            return (_tempVars[from] - _tempVars[to]) switch
+            return (_vars[from] - _vars[to]) switch
             {
                 > 0 => ComparisonResult.Greater,
                 < 0 => ComparisonResult.Smaller,
@@ -183,17 +211,16 @@ namespace Sorta
             };
         }
 
+        #endregion Compare
+
+        #region Swap
+
         public void Swap(int from, int to)
         {
+            EnsureSteps();
+
             _swaps++;
             _copies += 2;
-
-            if (!_hasSwapped)
-            {
-                _variables++;
-            }
-
-            _hasSwapped = true;
 
             _steps.Add(new Operation
             {
@@ -201,20 +228,16 @@ namespace Sorta
                 From = from,
                 To = to
             });
+
             (_data[from], _data[to]) = (_data[to], _data[from]);
         }
 
         public void Swap(string from, int to)
         {
+            EnsureSteps();
+
             _swaps++;
             _copies += 2;
-
-            if (!_hasSwapped)
-            {
-                _variables++;
-            }
-
-            _hasSwapped = true;
 
             _steps.Add(new Operation
             {
@@ -222,20 +245,16 @@ namespace Sorta
                 FromVar = from,
                 To = to
             });
-            (_tempVars[from], _data[to]) = (_data[to], _tempVars[from]);
+
+            (_vars[from], _data[to]) = (_data[to], _vars[from]);
         }
 
         public void Swap(int from, string to)
         {
+            EnsureSteps();
+
             _swaps++;
             _copies += 2;
-
-            if (!_hasSwapped)
-            {
-                _variables++;
-            }
-
-            _hasSwapped = true;
 
             _steps.Add(new Operation
             {
@@ -243,20 +262,16 @@ namespace Sorta
                 From = from,
                 ToVar = to
             });
-            (_data[from], _tempVars[to]) = (_tempVars[to], _data[from]);
+
+            (_data[from], _vars[to]) = (_vars[to], _data[from]);
         }
 
         public void Swap(string from, string to)
         {
+            EnsureSteps();
+
             _swaps++;
             _copies += 2;
-
-            if (!_hasSwapped)
-            {
-                _variables++;
-            }
-
-            _hasSwapped = true;
 
             _steps.Add(new Operation
             {
@@ -264,7 +279,19 @@ namespace Sorta
                 FromVar = from,
                 ToVar = to
             });
-            (_tempVars[from], _tempVars[to]) = (_tempVars[to], _tempVars[from]);
+
+            (_vars[from], _vars[to]) = (_vars[to], _vars[from]);
+        }
+
+        #endregion Swap
+
+        private void EnsureSteps()
+        {
+            if (_steps.Count >= _maxSteps)
+            {
+                _hasCompleted = false;
+                throw new MaxStepsReachedException(Results);
+            }
         }
     }
 }

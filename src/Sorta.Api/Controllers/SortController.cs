@@ -40,9 +40,16 @@ namespace Sorta.Api.Controllers
 
             var input = data.Split(',').Select(d => int.Parse(d));
 
-            var context = new RecordingSortContext(input);
+            var context = new RecordingSortContext(input, 10);
 
-            sort.Sort(context);
+            try
+            {
+                sort.Sort(context);
+            }
+            catch(MaxStepsReachedException exception)
+            {
+                return Ok(exception.Results);
+            }
 
             return Ok(context.Results);
         }

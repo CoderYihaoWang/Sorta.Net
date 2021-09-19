@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Sorta.Abstractions
 {
@@ -14,12 +9,11 @@ namespace Sorta.Abstractions
         public IEnumerable<int> Sorted { get; set; }
         public IEnumerable<Operation> Steps { get; set; }
         public int Copies { get; set; }
-        public int TemporaryVariables { get; set; }
+        public int Variables { get; set; }
         public int Comparisons { get; set; }
         public int Swaps { get; set; }
         public int Length { get => Unsorted.Count(); }
-        public bool IsSuccessful { get; set; }
-        public string ErrorMessage { get; set; }
+        public bool HasCompleted { get; set; }
     }
 
     public class Operation
@@ -29,12 +23,14 @@ namespace Sorta.Abstractions
         public int? To { get; set; }
         public string FromVar { get; set; }
         public string ToVar { get; set; }
+        public string Name { get; set; }
     }
 
     public enum OperationType
     {
         Compare,
         Swap,
-        Copy
+        Copy,
+        Create
     }
 }
