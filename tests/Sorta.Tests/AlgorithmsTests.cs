@@ -39,6 +39,10 @@ namespace Sorta.Tests.AlgorithmsTests
         [MemberData(nameof(Data))]
         public void MergeSortTopDownTests(int[] data) => TestAlgorithm(new MergeSortTopDown(), data);
 
+        [Theory]
+        [MemberData(nameof(Data))]
+        public void QuickSortTests(int[] data) => TestAlgorithm(new QuickSort(), data);
+
         private static void TestAlgorithm(IAlgorithm sort, int[] data)
         {
             var context = new TestSortContext(data);

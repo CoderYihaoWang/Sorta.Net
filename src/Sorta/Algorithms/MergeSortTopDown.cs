@@ -6,10 +6,8 @@ namespace Sorta.Algorithms
     {
         public string Algorithm => "Merge Sort Top Down";
 
-        public void Sort(ISortContext context)
-        {
+        public void Sort(ISortContext context) =>
             MergeSortInner(0, context.Length, context);
-        }
 
         private void MergeSortInner(int from, int to, ISortContext context)
         {
