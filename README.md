@@ -7,7 +7,7 @@ Sorta is a visualization tool that helps developers visualize their (comparison-
 This project is an API that exposes 2 endpoints:
 
 - `GET /` returns a list of all implemented sorting algorithms, as well as their urls. For example:
-```json
+```js
 {
     "Bubble Sort": "https://localhost:12345/api/bubble-sort",
     "Selection Sort": "https://localhost:12345/api/selection-sort",
@@ -17,7 +17,7 @@ This project is an API that exposes 2 endpoints:
 ```
 
 - `GET /{algorithm}?data={data}` Will send the `data` (comma separated int list) to the server to be sorted using the named algorithm (one of the urls got above, for example). The server will sort the data using the algorithm, and will respond with statistics for that sort, as well as a list of steps which provides a mechanism for the frontend to visualize the sorting process. For example, the following response is returned when querying `GET /quick-sort?data=5,4,3,2,1`:
-```json
+```js
 {
     "unsorted":[5,4,3,2,1], // original data
     "sorted":[1,2,3,4,5],   // sorted data
